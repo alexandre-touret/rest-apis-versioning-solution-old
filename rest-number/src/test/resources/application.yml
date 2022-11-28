@@ -61,4 +61,4 @@ spring:
 
 opentracing:
   jaeger:
-    enabled: true
+    enabled: false
