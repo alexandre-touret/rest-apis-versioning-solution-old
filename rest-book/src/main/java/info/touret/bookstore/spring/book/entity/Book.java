@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -15,32 +17,48 @@ import java.net.URL;
 @Entity
 public class Book implements Serializable {
 
+    @Transient
+    private transient String excerpt;
+
     @NotNull
-    public String title;
+    private String title;
     @Column(name = "isbn_13")
-    public String isbn13;
+    private String isbn13;
     @Column(name = "isbn_10")
-    public String isbn10;
-    public String author;
+    private String isbn10;
+    private String author;
     @Column(name = "year_of_publication")
-    public Integer yearOfPublication;
+    private Integer yearOfPublication;
     @Column(name = "nb_of_pages")
-    public Integer nbOfPages;
+    private Integer nbOfPages;
 
     @Min(1)
     @Max(10)
-    public Integer rank;
-    public BigDecimal price;
+    private Integer rank;
+    private BigDecimal price;
     @Column(name = "small_image_url")
-    public URL smallImageUrl;
+    private URL smallImageUrl;
     @Column(name = "medium_image_url")
-    public URL mediumImageUrl;
+    private URL mediumImageUrl;
     @Column(length = 10000)
 
-    public String description;
+    private String description;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    @PostLoad
+    public void initFields(){
+        if(description!=null) {
+            this.excerpt = description.substring(0, 100);
+        }
+    }
+
+
 
     public void setId(Long id) {
         this.id = id;

@@ -10,7 +10,7 @@ Here is a short description of it.
 
 This platform aims to store and get books of a bookstore.
 
-### System View 
+### System View
 
 ```mermaid
 C4Context
@@ -138,7 +138,7 @@ gitGraph:
 | [OpenID Connect](https://openid.net/connect)                                                                                                                                                                                                                                            | novice |]
 | [Docker](https://docs.docker.com/)                                                                                                                                                                                                                                                      | novice |
 
-### :wrench: Tools 
+### :wrench: Tools
 #### If you want to execute this workshop locally
 You must have set up these tools first:
 * [Java 17+](https://adoptium.net/temurin/releases/?version=17)
@@ -146,6 +146,38 @@ You must have set up these tools first:
 * [Docker](https://docs.docker.com/) & [Docker compose](https://docs.docker.com/compose/)
 * Any IDE ([IntelliJ IDEA](https://www.jetbrains.com/idea), [VSCode](https://code.visualstudio.com/), [Netbeans](https://netbeans.apache.org/),...) you want
 * [cURL](https://curl.se/), [jq](https://stedolan.github.io/jq/), [HTTPie](https://httpie.io/) or any tool to call your REST APIs
+
+
+Here are commands to validate your environment:
+
+**Java**
+
+```jshelllanguage
+java -version                                                                                                                                            a696618@WL-941Y493
+openjdk version "17.0.5" 2022-10-18
+OpenJDK Runtime Environment Temurin-17.0.5+8 (build 17.0.5+8)
+OpenJDK 64-Bit Server VM Temurin-17.0.5+8 (build 17.0.5+8, mixed mode, sharing)
+
+```
+
+**Gradle**
+
+If you use the wrapper, you won't have troubles. Otherwise...:
+
+```jshelllanguage
+gradle --version                                                                                                                                         a696618@WL-941Y493
+
+Welcome to Gradle 7.6!
+```
+
+**Docker Compose**
+
+```jshelllanguage
+docker compose version                                                                                                                              16 ↵ a696618@WL-941Y493
+Docker Compose version v2.12.2
+```
+
+
 
 #### :rocket: If you don't want to bother with a local setup
 
@@ -157,21 +189,21 @@ You then can open this project in either your local VS Code or directly in your 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/alexandre-touret/rest-apis-versioning-workshop.git)
 
 ##### With Github Codespaces
-You can also [use Github Codespaces](https://docs.github.com/en/codespaces/). 
+You can also [use Github Codespaces](https://docs.github.com/en/codespaces/).
 You can create a new one by [running "Code > Create codespace on main"](https://docs.github.com/en/codespaces/developing-in-codespaces/creating-a-codespace-for-a-repository#creating-a-codespace-for-a-repository).
 
 You have then to run the command in the shell:
 
 ```jshelllanguage
 pip install httpie
-sdk install java 17.0.5-tem
-sdk default java 17.0.5-tem
+    sdk install java 17.0.5-tem
+    sdk default java 17.0.5-tem
 ```
 
 ## :boom: Ready ?
 
 
-:warning: I **strongly** suggest to fork this project into your personal GitHub namespace (aka your GitHub accounb). 
+:warning: I **strongly** suggest to fork this project into your personal GitHub namespace (aka your GitHub accounb).
 You then can change the URL mentioned above to link GitHub and Gitpod:
 
 ```markdown

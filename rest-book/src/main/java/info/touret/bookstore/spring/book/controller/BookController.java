@@ -32,8 +32,17 @@ public class BookController implements BooksApi {
 
     @Override
     public ResponseEntity<BookDto> getRandomBook() {
-
         return ResponseEntity.ok(bookMapper.toBookDto(bookService.findRandomBook()));
+    }
+
+    @Override
+    public ResponseEntity<String> getBookExcerpt(Long id) {
+        var optionalBook = bookService.findBookById(id);
+        if (optionalBook.isPresent()) {
+            return ResponseEntity.ok(optionalBook.get().getExcerpt());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override

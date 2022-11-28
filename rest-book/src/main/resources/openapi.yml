@@ -271,6 +271,44 @@ paths:
             "*/*":
               schema:
                 "$ref": "#/components/schemas/APIError"
+  /books/{id}/excerpt:
+    get:
+      tags:
+        - book-controller
+      summary: Gets a book's excerpt from its ID
+      operationId: getBookExcerpt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Found book excerpt
+          content:
+            application/json:
+              schema:
+                type: string
+        '408':
+          description: Request Timeout
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/APIError"
+        '418':
+          description: I'm a teapot
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/APIError"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/APIError"
   /books/random:
     get:
       tags:
@@ -351,6 +389,9 @@ components:
         - title
       type: object
       properties:
+        excerpt:
+          type: string
+          readOnly: true
         title:
           type: string
         isbn13:
