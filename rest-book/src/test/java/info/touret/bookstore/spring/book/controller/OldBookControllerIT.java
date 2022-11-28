@@ -3,7 +3,8 @@ package info.touret.bookstore.spring.book.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import info.touret.bookstore.spring.book.dto.IsbnNumbers;
-import info.touret.bookstore.spring.book.generated.dto.BookDto;
+
+import info.touret.bookstore.spring.book.dto.OldBookDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Sql("classpath:/books-data.sql")
-class BookControllerIT {
+class OldBookControllerIT {
 
 
     @Value("${booknumbers.api.url}")
@@ -109,16 +110,15 @@ class BookControllerIT {
 
     @Test
     void should_get_a_random_book() {
-        var bookDto = testRestTemplate.getForEntity(booksUrl + "/random", BookDto.class).getBody();
+        var bookDto = testRestTemplate.getForEntity(booksUrl + "/random", OldBookDto.class).getBody();
         assertNotNull(bookDto.getId());
-        assertEquals(bookDto.getDescription().substring(0,100),bookDto.getExcerpt());
     }
 
 
     @Test
     void should_find_all_books() throws Exception {
         var requestEntity = RequestEntity.get(new URI(booksUrl)).accept(MediaType.APPLICATION_JSON).build();
-        var bookDtos = testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<BookDto>>() {
+        var bookDtos = testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<OldBookDto>>() {
         }).getBody();
         assertNotNull(bookDtos);
         assertEquals(1, bookDtos.size());
@@ -136,7 +136,7 @@ class BookControllerIT {
 
     @Test
     void should_find_a_book() throws Exception {
-        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/100", BookDto.class);
+        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/100", OldBookDto.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         var bookDto = responseEntity.getBody();
         assertNotNull(bookDto);
@@ -145,7 +145,7 @@ class BookControllerIT {
 
     @Test
     void should_find_no_book() throws Exception {
-        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/999", BookDto.class);
+        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/999", OldBookDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertFalse(responseEntity.hasBody());
     }
@@ -153,10 +153,10 @@ class BookControllerIT {
     @Test
     void should_register_a_book_successfully() throws Exception {
         createMockServerStandard();
-        BookDto bookDto = new BookDto();
+        var bookDto = new OldBookDto();
         bookDto.setAuthor("George Orwell");
         bookDto.setTitle("Animal's farm");
-        var responseEntity = testRestTemplate.postForEntity(booksUrl, bookDto, BookDto.class);
+        var responseEntity = testRestTemplate.postForEntity(booksUrl, bookDto, OldBookDto.class);
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         var uri = responseEntity.getHeaders().getLocation();
         assertNotNull(uri);
@@ -167,36 +167,27 @@ class BookControllerIT {
     @Test
     void should_throw_a_timeout_while_registering() throws Exception {
         createMockServerTimeout();
-        var bookDto = new BookDto();
+        var bookDto = new OldBookDto();
         bookDto.setAuthor("George Orwell");
         bookDto.setTitle("Animal's farm");
-        var responseEntity = testRestTemplate.postForEntity(booksUrl, bookDto, BookDto.class);
+        var responseEntity = testRestTemplate.postForEntity(booksUrl, bookDto, OldBookDto.class);
         assertEquals(HttpStatus.REQUEST_TIMEOUT, responseEntity.getStatusCode());
     }
 
     @Test
     void should_update_book() throws Exception {
-        var book = new BookDto();
+        var book = new OldBookDto();
         book.setId(100L);
         book.setAuthor("George Orwell");
         book.setTitle("Animal's farm");
-        var responseEntity = testRestTemplate.exchange(booksUrl, HttpMethod.PUT, new HttpEntity<>(book), BookDto.class);
+        var responseEntity = testRestTemplate.exchange(booksUrl, HttpMethod.PUT, new HttpEntity<>(book), OldBookDto.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
     void should_delete_book() throws Exception {
         testRestTemplate.delete(booksUrl +"/100");
-        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/100", BookDto.class);
+        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/100", OldBookDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
-    @Test
-    void should_find_an_excerpt() throws Exception {
-        var responseEntity = testRestTemplate.getForEntity(booksUrl + "/100/excerpt", String.class);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        var excerpt = responseEntity.getBody();
-        assertNotNull(excerpt);
-        assertEquals("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut l", excerpt);
-    }
-
 }
