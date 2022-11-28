@@ -40,4 +40,4 @@ logging:
         type: trace
 opentracing:
   jaeger:
-    enabled: true
+    enabled: false
