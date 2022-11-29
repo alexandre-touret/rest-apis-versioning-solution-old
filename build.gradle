@@ -101,7 +101,7 @@ project(':rest-book') {
         minHeapSize = "128m"
         maxHeapSize = "512m"
         // set JVM arguments for the test JVM(s)
-        jvmArgs '-XX:MaxPermSize=256m'
+        //jvmArgs = '-XX:MaxPermSize=256m'
     }
 
 
