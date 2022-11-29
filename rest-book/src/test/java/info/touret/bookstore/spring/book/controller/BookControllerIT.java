@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -98,14 +99,14 @@ class BookControllerIT {
                         requestTo(new URI(isbnAPIURL)))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(request -> {
-                    try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    var max = System.currentTimeMillis()+30000;
+                    while(System.currentTimeMillis()<max){
+                        // do nothing
                     }
                     return new MockClientHttpResponse(isbnNumbers.toString().getBytes(), HttpStatus.OK);
                 });
-    }
+
+            }
 
     @Test
     void should_get_a_random_book() {

@@ -38,11 +38,11 @@ subprojects {
     }
 
     dependencies {
-        //developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        implementation 'io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.3.1'
         implementation 'io.micrometer:micrometer-registry-prometheus'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        compileOnly 'org.springframework.boot:spring-boot-devtools'
     }
 
     bootJar {
