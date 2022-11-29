@@ -62,6 +62,8 @@ You can also check the documentation by browsing these endpoints:
 
 You can also use the scripts located in the [bin](../bin) folder.
 
+Here are some examples of the functionalities provided:
+
 * Get a Random Book
 
 You can get a random book by running this command:
@@ -81,7 +83,7 @@ Now you can stop this service now.
 
 In this chapter, we will update the [Book schema in the OpenAPI spec file](../rest-book/src/main/resources/openapi.yml) adding the attribute ``excerpt``.
 
-This attribute is just the beginning of the [description attribute](../rest-book/src/main/resources/openapi.yml).
+This attribute is (only for the workshop) the beginning of the [description attribute](../rest-book/src/main/resources/openapi.yml).
 We will extract the first 100 characters.
 
 1. Update the [OpenAPI spec file]((../rest-book/src/main/resources/openapi.yml)), add the ``excerpt`` attribute
@@ -195,13 +197,13 @@ Now you can re-build your application and validate it by running tests.
 
 6. Now, let's get a random book with an excerpt
 
-You can restart your rest-book service
+Restart your rest-book service
 
 ```jshelllanguage
 ./gradlew bootRun -p rest-book
 ```
 
-You can check it manually by running the following command:
+Check it manually by running the following command:
 
 ```jshelllanguage
 http :8082/books/1098 --print b | jq .excerpt 
@@ -212,27 +214,64 @@ You can also do that through the API Gateway:
 ```jshelllanguage
 http :8080/books/1098 --print b | jq .excerpt 
 ```
+## Adding a new operation
 
-## Adding new operations
-
-You can then add a new operation ``getBookExcerpt``:
-
-```java
- @Override
-    public ResponseEntity<String> getBookExcerpt(Long id) {
-        var optionalBook = bookService.findBookById(id);
-        if (optionalBook.isPresent()) {
-            return ResponseEntity.ok(optionalBook.get().getExcerpt());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-```
-
+You can then add a new operation ``getBookExcerpt``.
 
 In the [OpenAPI spec file](../rest-book/src/main/resources/openapi.yml), add a new operation:
+<details>
+<summary>Click to expand</summary>
 
-You just added a new data and functionality without versioning!
+For instance:
+
+```yaml
+  /books/{id}/excerpt:
+    get:
+      tags:
+        - book-controller
+      summary: Gets a book's excerpt from its ID
+      operationId: getBookExcerpt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Found book excerpt
+          content:
+            application/json:
+              schema:
+                type: string
+        '408':
+          description: Request Timeout
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/APIError"
+        '418':
+          description: I'm a teapot
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/APIError"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/APIError"
+
+```
+</details>
+
+You can now generate the corresponding Java code.
+
+```jshelllanguage
+./gradlew  openApiGenerate -p rest-book
+```
 
 Now, you can add a new integration test assertion:
 
