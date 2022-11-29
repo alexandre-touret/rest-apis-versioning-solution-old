@@ -99,10 +99,9 @@ class OldBookControllerIT {
                         requestTo(new URI(isbnAPIURL)))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(request -> {
-                    try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    var max = System.currentTimeMillis()+30000;
+                    while(System.currentTimeMillis()<max){
+                        // do nothing
                     }
                     return new MockClientHttpResponse(isbnNumbers.toString().getBytes(), HttpStatus.OK);
                 });
