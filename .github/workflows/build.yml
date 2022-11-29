@@ -14,7 +14,7 @@ jobs:
           java-version: '17'
           cache: 'gradle'
       - name: Build with Gradle
-        run: ./gradlew -p rest-book clean test --tests 'info.touret.bookstore.spring.book.controller.OldBookControllerIT' --info
+        run: ./gradlew -p rest-book clean build
   build-numbers:
     runs-on: ubuntu-latest
     steps:
