@@ -17,21 +17,30 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -54,7 +63,10 @@ public class AuthorizationConfiguration {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        return http.formLogin(Customizer.withDefaults()).build();
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .oidc(Customizer.withDefaults());
+
+        return http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt).build();
     }
 
     /**
@@ -73,7 +85,12 @@ public class AuthorizationConfiguration {
                             .clientSecret("{noop}" + client.getValue().getClientSecret())
                             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                            .scopes(scopes -> scopes.addAll(client.getValue().getScopes()))
+                            .scopes(scopes -> {
+                                        scopes.add(OidcScopes.OPENID);
+                                        scopes.add(OidcScopes.PROFILE);
+                                        scopes.addAll(client.getValue().getScopes());
+                                    }
+                            )
                             .build();
                 }).toList();
         LOGGER.info("[{}] client repositories created", clientRepositories.size());
@@ -104,6 +121,7 @@ public class AuthorizationConfiguration {
     public JwtDecoder jwtDecoder(KeyPair keyPair) {
         return NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic()).build();
     }
+
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     KeyPair generateRsaKey() {
@@ -112,8 +130,7 @@ public class AuthorizationConfiguration {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
         return keyPair;
