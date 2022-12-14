@@ -92,14 +92,14 @@ The Bookstore IAM is composed of:
 ### :straight_ruler: Stack
 Here is a summary of the stack used in this workshop for this architecture:
 
-| Container | Tools | Comments |
-|---|---|---|
-| API Gateway | Spring Cloud Gateway 2021.0.4  |  |
-| Bookstore API | JAVA 17,Spring Boot 2.7.X |  |
-| ISBN API | JAVA 17,Spring Boot 2.7.X |  |
-| Configuration Server | Spring Cloud Config 2021.0.4 |  |
-| Database | PostgreSQL |  |
-| Authorization Server | JAVA 17,Spring Boot 2.7.X, Spring Authorization Server 0.4.0 |  |
+| Container | Tools                                                        | Comments |
+|---|--------------------------------------------------------------|---|
+| API Gateway | Spring Cloud Gateway 2022.0.0-RC2                                |  |
+| Bookstore API | JAVA 17,Spring Boot 3.0.X                                    |  |
+| ISBN API | JAVA 17,Spring Boot 3.0.X                                    |  |
+| Configuration Server | Spring Cloud Config 2022.0.0-RC2                                |  |
+| Database | PostgreSQL                                                   |  |
+| Authorization Server | JAVA 17,Spring Boot 3.0.X, Spring Authorization Server 1.0.0 |  |
 
 
 ### Customers
