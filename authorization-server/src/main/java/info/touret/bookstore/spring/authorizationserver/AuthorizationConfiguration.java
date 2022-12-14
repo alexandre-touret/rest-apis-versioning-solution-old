@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -30,17 +29,12 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -69,6 +63,7 @@ public class AuthorizationConfiguration {
         return http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt).build();
     }
 
+
     /**
      * Stores all the clients defined in the application.properties file under the <pre>authorization.clients</pre> prefix.
      * For instance: <pre>authorization.clients.customer1.clientId=customer1</pre>
@@ -78,22 +73,22 @@ public class AuthorizationConfiguration {
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         var clientRepositories = authorizationClientsProperties.getClients().entrySet().stream().map(
-                client -> {
-                    LOGGER.info("Creating [{},{},{}] client repository", client.getKey(), client.getValue().getClientSecret(), client.getValue().getScopes());
-                    return RegisteredClient.withId(UUID.randomUUID().toString())
-                            .clientId(client.getValue().getClientId())
-                            .clientSecret("{noop}" + client.getValue().getClientSecret())
-                            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                            .scopes(scopes -> {
-                                        scopes.add(OidcScopes.OPENID);
-                                        scopes.add(OidcScopes.PROFILE);
-                                        scopes.addAll(client.getValue().getScopes());
-                                    }
-                            )
-                            .build();
-                }).toList();
+                client -> RegisteredClient.withId(UUID.randomUUID().toString())
+                        .clientId(client.getValue().getClientId())
+                        .clientSecret("{noop}" + client.getValue().getClientSecret())
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                        .scopes(scopes -> {
+                                    scopes.add(OidcScopes.OPENID);
+                                    scopes.add(OidcScopes.PROFILE);
+                                    scopes.addAll(client.getValue().getScopes());
+                                }
+                        )
+                        .build()).toList();
         LOGGER.info("[{}] client repositories created", clientRepositories.size());
+        clientRepositories.stream().forEach(
+                registeredClient -> LOGGER.info("clientID : {} , scopes {}",registeredClient.getClientId(),registeredClient.getScopes())
+        );
         return new InMemoryRegisteredClientRepository(clientRepositories);
     }
 
@@ -101,12 +96,10 @@ public class AuthorizationConfiguration {
     public JWKSource<SecurityContext> jwkSource(KeyPair keyPair) {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        // @formatter:off
         RSAKey rsaKey = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
-        // @formatter:on
         JWKSet jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
     }
