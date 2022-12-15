@@ -32,7 +32,7 @@ public class GatewayApplication {
      */
     @Bean
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
-        /* Defaut configuration for OAUTH authorization (TO BE ADDED during the workshop) */
+        /* Defaut configuration for OAUTH authorization (TO BE ADDED during the workshop)
         http.csrf().disable().cors().disable()
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(GET,"/books/count").hasAuthority("SCOPE_book:read")
@@ -42,20 +42,21 @@ public class GatewayApplication {
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer().jwt(Customizer.withDefaults());
-
+*/
         /* If the previous configuration is applied, you would remove this following line (and the other way around) */
-        //http.csrf().disable().cors().disable().authorizeExchange().anyExchange().permitAll();
+        http.csrf().disable().cors().disable().authorizeExchange().anyExchange().permitAll();
         return http.build();
     }
 
-    @Bean
+ /* If the security is enabled, you MUST uncomment the following factories
+  @Bean
     JwtDecoder jwtDecoder(OAuth2ResourceServerProperties properties) {
         return NimbusJwtDecoder.withJwkSetUri(properties.getJwt().getJwkSetUri()).build();
 
-    }
+    }*/
 
-    @Bean
+  /*  @Bean
     public ReactiveJwtDecoder reactiveJwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String issuerUrl) {
         return ReactiveJwtDecoders.fromIssuerLocation(issuerUrl);
-    }
+    }*/
 }
