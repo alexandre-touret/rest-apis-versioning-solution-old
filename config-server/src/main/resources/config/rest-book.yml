@@ -47,12 +47,6 @@ management:
       enabled: true
     datasource:
       enabled: true
-  metrics:
-    web:
-      client:
-        request:
-          autotime:
-            enabled: true
 springdoc:
   api-docs:
     enabled: true

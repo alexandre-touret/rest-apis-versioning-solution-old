@@ -67,12 +67,6 @@ management:
       enabled: true
     readinessstate:
       enabled: true
-  metrics:
-    web:
-      client:
-        request:
-          autotime:
-            enabled: true
 
 
 # Default values
