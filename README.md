@@ -59,8 +59,7 @@ C4Container
             ContainerDb(database, "Database", "PostgreSQL Database", "Stores bookstore")
             Container(isbnApi,"ISBN","Spring Boot, Cloud","Exposes the ISBN APIs")
             Container(configuration,"Configuration Server","Spring Cloud Config","Exposes the configuration")
-            Container(jaeger,"Jaeger","Jaeger","Gathers and provides distributed tracing")
-            ContainerDb(monitoring, "Monitoring TSDB", "Prometheus", "Stores metrics")
+            Container(zipkin,"Zipkin","Zipkin","Gathers and provides distributed tracing")
         }
       }
 

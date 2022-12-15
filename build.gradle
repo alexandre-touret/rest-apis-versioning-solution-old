@@ -40,8 +40,12 @@ subprojects {
 
     dependencies {
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
-        implementation 'io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.3.1'
+        //implementation 'io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.3.1'
         implementation 'io.micrometer:micrometer-registry-prometheus'
+        implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+        implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+        implementation 'io.opentelemetry:opentelemetry-exporter-zipkin'
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         runtimeOnly 'org.springframework.boot:spring-boot-properties-migrator'
@@ -62,7 +66,6 @@ project(':rest-book') {
         implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
         implementation 'org.springframework.cloud:spring-cloud-starter-config'
         implementation 'io.github.resilience4j:resilience4j-spring-boot2'
-        implementation 'org.springframework.boot:spring-boot-starter-aop'
         implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
         implementation 'com.fasterxml.jackson.core:jackson-annotations'
         implementation "org.mapstruct:mapstruct:${mapstructVersion}"
@@ -99,7 +102,7 @@ project(':rest-book') {
         ]
     }
 
-    springBoot{
+    springBoot {
         mainClass = "info.touret.bookstore.spring.RestBookstoreApplication"
     }
     sourceSets.main.java.srcDirs += "$buildDir/generated/src/main/java".toString()
@@ -154,7 +157,7 @@ project(':rest-number') {
                 '-Amapstruct.defaultComponentModel=spring'
         ]
     }
-    springBoot{
+    springBoot {
         mainClass = "info.touret.bookstore.spring.number.RestNumbersApplication"
     }
     sourceSets.main.java.srcDirs += "$buildDir/generated/src/main/java".toString()
