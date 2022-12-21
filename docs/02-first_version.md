@@ -2,7 +2,9 @@
 
 We will define in this chapter our first version in the URI and in a header mixing between the gateway & the apps.
 
-:warning: Before starting, this chapter, please shut down all the spring apps already started:
+> **Warning**
+> 
+> Before starting, this chapter, please shut down all the spring apps already started:
 
 * [config server](../config-server)
 * [gateway](../gateway)

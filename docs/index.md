@@ -19,8 +19,9 @@ Here is how this repository is organised and a short explanation:
 
 ### :computer: Infrastructure
 
-:warning: The required infrastructure is available by
-running [Docker containers](https://www.docker.com/resources/what-container/).
+> **Warning**
+> 
+> The required infrastructure is available by running [Docker containers](https://www.docker.com/resources/what-container/).
 
 You can start the whole by running [Docker compose](https://docs.docker.com/compose/).
 
@@ -47,7 +48,9 @@ books-zipkin        "start-zipkin"           zipkin              running (health
 
 ## :information_desk_person: Spring services to be started before
 
-:warning: You **MUST** also start the [config-server](../config-server) service before.
+> **Warning**
+> 
+> You **MUST** also start the [config-server](../config-server) service before.
 
 Start a new shell and run the following command at the root of the project (i.e., ``rest-apis-versioning-workshop``)
 
@@ -140,6 +143,7 @@ Transfer-Encoding: chunked
 </details>
 
 :warning: In the same way, you **MUST** also start the [authorization-server](../authorization-server).
+
 You can run it by running the following command:
 
 ```jshelllanguage
