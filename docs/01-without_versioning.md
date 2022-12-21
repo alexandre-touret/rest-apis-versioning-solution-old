@@ -327,7 +327,12 @@ You also have to modify the test ``should_get_a_random_book()``.
 You can remove this line:
 
 ```java
-        assertNotNull(bookDto.getExcerpt());
+assertNotNull(bookDto.getExcerpt());
 ```
 
-See what happens and **explain it** :exclamation:
+> **Note**
+> 
+> See what happens and **explain it** :exclamation:See what happens and **explain it** :exclamation:
+> 
+> Then[go to chapter 2](./02-first_version.md)
+

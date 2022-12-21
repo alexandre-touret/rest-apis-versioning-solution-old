@@ -139,7 +139,7 @@ gitGraph:
 
 ### :wrench: Tools
 #### If you want to execute this workshop locally
-You must have set up these tools first:
+You **MUST** have set up these tools first:
 * [Java 17+](https://adoptium.net/temurin/releases/?version=17)
 * [Gradle 7.5+](https://gradle.org/)
 * [Docker](https://docs.docker.com/) & [Docker compose](https://docs.docker.com/compose/)
@@ -201,8 +201,10 @@ pip install httpie
 
 ## :boom: Ready ?
 
+> **Warning**
+> 
+> I **strongly** suggest to fork this project into your personal GitHub namespace (aka your GitHub account).
 
-:warning: I **strongly** suggest to fork this project into your personal GitHub namespace (aka your GitHub accounb).
 You then can change the URL mentioned above to link GitHub and Gitpod:
 
 ```markdown
@@ -213,4 +215,8 @@ or you can directly browse this URL (think to change the ``%%MY_NAMESPACE%%`` pr
 
 ``https://gitpod.io/#github.com/%%MY_NAMESPACE%%/rest-apis-versioning-workshop.git``
 
-Now, you can start [the workshop](./docs/index.md) :tada:. 
+
+> **And now something completely different...**
+>
+> You can start [the workshop](./docs/index.md) :tada:.
+  
