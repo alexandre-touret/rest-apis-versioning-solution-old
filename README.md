@@ -216,7 +216,7 @@ or you can directly browse this URL (think to change the ``%%MY_NAMESPACE%%`` pr
 ``https://gitpod.io/#github.com/%%MY_NAMESPACE%%/rest-apis-versioning-workshop.git``
 
 
-> **And now something completely different...**
+> **Note**
 >
-> You can start [the workshop](./docs/index.md) :tada:.
+> You can now start [the workshop](./docs/index.md) :tada:.
   
