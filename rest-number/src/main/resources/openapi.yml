@@ -3,7 +3,7 @@ info:
   title: OpenAPI definition
   version: v1
 servers:
-  - url: http://localhost:8081/V1
+  - url: http://localhost:8081/v1
     description: Generated server url
 paths:
   /isbns:

@@ -1,5 +1,7 @@
 server:
   port: 8082
+  servlet:
+    context-path: /v1
 spring:
   ## The most important feature... ever
   banner:
@@ -9,7 +11,7 @@ spring:
     username: book
     password: book
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create-drop
   cloud:
