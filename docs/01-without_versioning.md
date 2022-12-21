@@ -332,7 +332,7 @@ assertNotNull(bookDto.getExcerpt());
 
 > **Note**
 > 
-> See what happens and **explain it** :exclamation:See what happens and **explain it** :exclamation:
+> See what happens and **explain it** :exclamation:
 > 
-> Then[go to chapter 2](./02-first_version.md)
+> [Go then to chapter 2](./02-first_version.md)
 
