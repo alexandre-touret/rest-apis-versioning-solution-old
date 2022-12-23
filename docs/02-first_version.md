@@ -3,14 +3,13 @@
 We will define in this chapter our first version in the URI and in a header mixing in the gateway & the apps.
 
 > **Warning**
-> 
+>
 > Before starting, this chapter, please shut down all the spring apps already started:
-
-* [config server](../config-server)
-* [gateway](../gateway)
-* [authorization server](../authorization-server)
-* [rest-book](../rest-book)
-* [rest-number](../rest-number)
+> * [config server](../config-server)
+> * [gateway](../gateway)
+> * [authorization server](../authorization-server)
+> * [rest-book](../rest-book)
+> * [rest-number](../rest-number)
 
 ## URI based version creation
 
@@ -51,17 +50,21 @@ Now, try to build the project:
 
 Update then your unit tests to reflect the version handling:
 
-* Add the same property in the [application.yml test configuration file](../rest-book/src/test/resources/application.yml) 
+* Add the same property in
+  the [application.yml test configuration file](../rest-book/src/test/resources/application.yml)
 
-* In the ``setUp`` method of [BookControllerIT](../rest-book/src/test/java/info/touret/bookstore/spring/book/controller/BookControllerIT.java) and [OldBookControllerIT](../rest-book/src/test/java/info/touret/bookstore/spring/book/controller/OldBookControllerIT.java) integration tests, modify the basepath
+* In the ``setUp`` method
+  of [BookControllerIT](../rest-book/src/test/java/info/touret/bookstore/spring/book/controller/BookControllerIT.java)
+  and [OldBookControllerIT](../rest-book/src/test/java/info/touret/bookstore/spring/book/controller/OldBookControllerIT.java)
+  integration tests, modify the basepath:
 
 ```java
 @BeforeEach
-void setUp() {
-booksUrl ="http://127.0.0.1:" + port + "/v1/books";
-mockServer = MockRestServiceServer.bindTo(restTemplate).build();
-mockServer.reset();
-}
+void setUp(){
+        booksUrl="http://127.0.0.1:"+port+"/v1/books";
+        mockServer=MockRestServiceServer.bindTo(restTemplate).build();
+        mockServer.reset();
+        }
 
 ```
 
@@ -81,9 +84,10 @@ assertTrue(uri.getPath().matches("/v1/books/[1-9]+$"));
 
 ```java
 @BeforeEach
-void setUp() throws Exception {
-    maintenanceUrl = "http://127.0.0.1:" + port + "/v1/maintenance";
-    booksUrl = "http://127.0.0.1:" + port + "/v1/books";
+void setUp()throws Exception{
+        maintenanceUrl="http://127.0.0.1:"+port+"/v1/maintenance";
+        booksUrl="http://127.0.0.1:"+port+"/v1/books";
+        [...]
 ```
 
 Build the application:
@@ -94,11 +98,12 @@ Build the application:
 
 ##### Looking forward to rest-number api versioning updates
 
-This module reaches [rest-number](../rest-number) through API calls. 
-It will be versioned later (see below). 
-We need to anticipate these changes in this module:
+This module reaches [rest-number](../rest-number) through API calls.
+It will be versioned later (see below).
+We need to anticipate these changes:
 
-In the [rest-book configuration file](../config-server/src/main/resources/config/rest-book.yml) , modify the following property adding the version:
+In the [rest-book configuration file](../config-server/src/main/resources/config/rest-book.yml) , modify the following
+property adding the version:
 
 ```yaml
 booknumbers:
@@ -137,9 +142,13 @@ Now, try to build the project:
 
 Update then your unit tests to reflect the version handling:
 
-Add the same property in the [application.yml test configuration file](../rest-number/src/test/resources/application.yml)
+Add the same property in
+the [application.yml test configuration file](../rest-number/src/test/resources/application.yml)
 
-To get your unit tests successful, you will also have to modify the [BookNumbersControllerIT](../rest-number/src/test/java/info/touret/bookstore/spring/number/controller/BookNumbersControllerIT.java) and [BookNumberControllerTimeoutIT](../rest-number/src/test/java/info/touret/bookstore/spring/number/controller/BookNumbersControllerTimeoutIT.java) test classes by modifying this line:
+To get your unit tests successful, you will also have to modify
+the [BookNumbersControllerIT](../rest-number/src/test/java/info/touret/bookstore/spring/number/controller/BookNumbersControllerIT.java)
+and [BookNumberControllerTimeoutIT](../rest-number/src/test/java/info/touret/bookstore/spring/number/controller/BookNumbersControllerTimeoutIT.java)
+test classes by modifying this line in both classes:
 
 from:
 
@@ -239,26 +248,35 @@ You can now reach the API.
 For instance, you can reach the gateway:
 
 ```jshelllanguage
-http :8080/v1/books/count
+http:
+8080 / v1 / books / count
 ```
 
 You can also access directly to the rest-book backend:
 
 ```jshelllanguage
-http :8082/v1/books/count
+http:
+8082 / v1 / books / count
 ```
 
-Now you can update in the same way [your scripts](../bin) adding the version prefix.  
+Now you can update in the same way [your scripts](../bin) adding the version prefix.
+
+By the way, you can also verify if the Swagger and OpenAPI is up-to-date by browsing these endpoints:
+
+* http://localhost:8082/swagger-ui/index.html
+* http://localhost:8081/swagger-ui/index.html
 
 ### Create a HTTP Header based version
 
-In this chapter, we will put in place a rewrite/redirection mechanism in the gateway to route incoming requests regarding an header.  
+In this chapter, we will put in place a rewrite/redirection mechanism in the gateway to route incoming requests
+regarding an header.
 
 For this workshop we will extract the ``X-API-VERSION`` HTTP header and route to the appropriate backend.
 For instance if we reach the API as following:
 
 ```jshelllanguage
-http :8080/books/count "X-API-VERSION: v1" 
+http:
+8080 / books / count "X-API-VERSION: v1" 
 ```
 
 Our gateway will rewrite the URL and reach the good version (i.e., the version specified by the header). 
@@ -266,7 +284,7 @@ Our gateway will rewrite the URL and reach the good version (i.e., the version s
 You could find below a flowchart explaining the mechanism:
 
 ```mermaid
-flowchart LR
+flowchart TD
     A(Incoming request /books/count with header ``X-API-VERSION: v1``) --> B{Check the presence of the HEADER and the URI base path}
     B -->|OK| C(URL Rewriting : books/count > /v1/books/count )
     B -->|KO| D[Error]
@@ -279,18 +297,18 @@ We will illustrate this behaviour by adding another route in the [gateway's conf
 Here is an example 
 
 ```yaml
-...
-  cloud:
-    gateway:
-      routes:
-        - id: rewrite_v1
-          uri: http://127.0.0.1:8082
-          predicates:
-            - Path=/books/{segment}
-            - Header=X-API-VERSION, v1
-          filters:
-            - RewritePath=/books/(?<segment>.*),/v1/books/$\{segment}
-        - id: rewrite_v1
+[ ... ]
+cloud:
+ gateway:
+  routes:
+   - id: rewrite_v1
+     uri: http://127.0.0.1:8082
+     predicates:
+      - Path=/books/{segment}
+      - Header=X-API-VERSION, v1
+     filters:
+      - RewritePath=/books/(?<segment>.*),/v1/books/$\{segment}
+   - id: rewrite_v1
           uri: http://127.0.0.1:8082
           predicates:
             - Path=/books
@@ -328,13 +346,13 @@ You can create now some dedicated scripts for this new approach. For instance, t
 
 You MAY create the following scripts
 
-* bin/countBooks-header.sh  
-* bin/createBook-header.sh  
-* bin/randomBook-header.sh  
-* bin/secureCountBooks-header.sh  
-* bin/secureISBN-header.sh  
-* bin/secureCreateBook-header.sh
-* bin/secureRandomBook-header.sh
+* ``bin/countBooks-header.sh``
+* ``bin/createBook-header.sh``
+* ``bin/randomBook-header.sh``
+* ``bin/secureCountBooks-header.sh``
+* ``bin/secureISBN-header.sh``
+* ``bin/secureCreateBook-header.sh``
+* ``bin/secureRandomBook-header.sh``
 
 You have to add this header as mentioned above:
 ```jshelllanguage
@@ -386,9 +404,11 @@ For your information, you can define these new routes in [the gateway](../gatewa
           filters:
             - RewritePath=/isbns,/v1/isbns
 ```
+
 Restart the gateway (see above to know how).
 
-You can now test them by specifying the ``accept`` header:
+You can now test them by specifying
+the [``accept`` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept):
 
 ```jshelllanguage
 http :8080/isbns "accept:application/vnd.api.v1+json" 
@@ -398,7 +418,6 @@ http :8080/isbns "accept:application/vnd.api.v1+json"
 
 In this chapter we have seen how to specify and deal with API version numbers in a gateway and the backends. 
 The [gateway configuration](../gateway/src/main/resources/application.yml) is intentionally simple and minimalistic. 
-
 In _the real life_ we would code a dynamic routing and filtering mechanism.
 
 
