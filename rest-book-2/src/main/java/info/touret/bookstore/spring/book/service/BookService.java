@@ -39,16 +39,19 @@ public class BookService {
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final String isbnServiceURL;
 
+    private final Integer findLimit;
+
     public BookService(BookRepository bookRepository,
                        RestTemplate restTemplate,
                        @Value("${booknumbers.api.url}") String isbnServiceURL,
-                       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CircuitBreakerFactory circuitBreakerFactory) {
+                       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CircuitBreakerFactory circuitBreakerFactory,
+                       @Value("${book.find.limit:10}") Integer findLimit) {
         this.bookRepository = bookRepository;
         this.restTemplate = restTemplate;
         this.isbnServiceURL = isbnServiceURL;
 
         this.circuitBreakerFactory = circuitBreakerFactory;
-
+        this.findLimit = findLimit;
     }
 
     /**
@@ -77,7 +80,6 @@ public class BookService {
                 () -> persistBook(book),
                 throwable -> fallbackPersistBook(book)
         );
-
         return bookRepository.save(book);
     }
 
@@ -108,7 +110,7 @@ public class BookService {
      * @return all the books stored in the database
      */
     public List<Book> findAllBooks() {
-        return bookRepository.findAll(PageRequest.of(0, 10));
+        return bookRepository.findAll(PageRequest.of(0, findLimit));
     }
 
     public long count() {

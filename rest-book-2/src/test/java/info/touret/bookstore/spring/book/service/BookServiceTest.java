@@ -50,7 +50,7 @@ class BookServiceTest {
 
     @BeforeEach
     void setUp() {
-        bookService = new BookService(bookRepository, restTemplate, "URL", circuitBreakerFactory);
+        bookService = new BookService(bookRepository, restTemplate, "URL", circuitBreakerFactory,10);
     }
 
     @Test

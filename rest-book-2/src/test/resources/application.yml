@@ -41,3 +41,6 @@ logging:
       hibernate:
         stat: debug
         type: trace
+book:
+  find:
+    limit: 10
