@@ -376,33 +376,33 @@ For example, you can define the new one defined in the last two paragraphs as fo
 Accept: application/vnd.api.v1+json
 ```
 
-We won't deep dive into this mechanism because its implementation is mostly the same as the last one (i.e., .
+We won't deep dive into this mechanism because its implementation is mostly the same as the last one.
 
 For your information, you can define these new routes in [the gateway](../gateway/src/main/resources/application.yml).
 
 ```yaml
-        # HTTP ACCEPT MEDIA TYPE HEADER VERSIONING
-        - id: rewrite_accept_v1
-          uri: http://127.0.0.1:8082
-          predicates:
-            - Path=/books
-            - Header=accept, application/vnd.api\.v1\+json
-          filters:
-            - RewritePath=/books,/v1/books
-        - id: rewrite_accept_v1
-          uri: http://127.0.0.1:8082
-          predicates:
-            - Path=/books/{segment}
-            - Header=accept, application/vnd.api\.v1\+json
-          filters:
-            - RewritePath=/books/(?<segment>.*),/v1/books/$\{segment}
-        - id: rewrite_accept_v1
-          uri: http://127.0.0.1:8081
-          predicates:
-            - Path=/isbns
-            - Header=accept, application/vnd.api\.v1\+json
-          filters:
-            - RewritePath=/isbns,/v1/isbns
+   # HTTP ACCEPT MEDIA TYPE HEADER VERSIONING
+   - id: rewrite_accept_v1
+     uri: http://127.0.0.1:8082
+     predicates:
+       - Path=/books
+       - Header=accept, application/vnd.api\.v1\+json
+     filters:
+       - RewritePath=/books,/v1/books
+   - id: rewrite_accept_v1
+     uri: http://127.0.0.1:8082
+     predicates:
+       - Path=/books/{segment}
+       - Header=accept, application/vnd.api\.v1\+json
+     filters:
+       - RewritePath=/books/(?<segment>.*),/v1/books/$\{segment}
+   - id: rewrite_accept_v1
+     uri: http://127.0.0.1:8081
+     predicates:
+       - Path=/isbns
+       - Header=accept, application/vnd.api\.v1\+json
+     filters:
+       - RewritePath=/isbns,/v1/isbns
 ```
 
 Restart the gateway (see above to know how).
