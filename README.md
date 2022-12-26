@@ -46,7 +46,7 @@ C4Container
 
 
       Person(customerA, "Bookstore Customer", "A customer of the bookstore") 
-      Person(adminA, "Bookstore Administrator", "An administrator of the bookstore") 
+      Person(adminA, "Bookstore Administrator", "An administrator <br/> of the bookstore") 
 
       Enterprise_Boundary(b0, "Bookstore Boundary") {
         Container_Boundary(b2,"Bookstore IAM"){
@@ -59,7 +59,7 @@ C4Container
             ContainerDb(database, "Database", "PostgreSQL Database", "Stores bookstore")
             Container(isbnApi,"ISBN","Spring Boot, Cloud","Exposes the ISBN APIs")
             Container(configuration,"Configuration Server","Spring Cloud Config","Exposes the configuration")
-            Container(zipkin,"Zipkin","Zipkin","Gathers and provides distributed tracing")
+            Container(zipkin,"Zipkin","Zipkin","Gathers and <br/> provides distributed tracing")
         }
       }
 
