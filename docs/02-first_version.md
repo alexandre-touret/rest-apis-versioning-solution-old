@@ -15,10 +15,10 @@ We will define in this chapter our first version in the URI and in a header mixi
 
 In the curent rest-book version,we will define the version in the BookController's URI.
 
-The pattern should be like ``/api/%VERSION%/books``. 
+The pattern should be like ``/api/%VERSION%/books``.
 For instance, we could have ``/api/v1/books``.
 
-Here is how we could implement it both in the backends and in the gateway.  
+Here is how we could implement it both in the backends and in the gateway.
 
 ### Configuration
 #### Rest-Book
@@ -112,7 +112,7 @@ booknumbers:
 ```
 
 Update the same property in the rest-book [application.yml test configuration file](../rest-book/src/test/resources/application.yml)
- and finally, update the mock configuration in the test classes:
+and finally, update the mock configuration in the test classes:
 
 #### Rest-Number
 Update the [rest-number's openAPI descriptor file](../rest-number/src/main/resources/openapi.yml) adding the version in the URL:
@@ -155,7 +155,7 @@ from:
 ```java
 var response = restTemplate.getForEntity("http://127.0.0.1:" + port + "/isbns", BookNumbersDto.class);
 ```
-to: 
+to:
 ```java
 var response = restTemplate.getForEntity("http://127.0.0.1:" + port + "/v1/isbns", BookNumbersDto.class);
 ```
@@ -279,7 +279,7 @@ http:
 8080 / books / count "X-API-VERSION: v1" 
 ```
 
-Our gateway will rewrite the URL and reach the good version (i.e., the version specified by the header). 
+Our gateway will rewrite the URL and reach the good version (i.e., the version specified by the header).
 
 You could find below a flowchart explaining the mechanism:
 
@@ -294,7 +294,7 @@ flowchart TD
 
 We will illustrate this behaviour by adding another route in the [gateway's configuration](../gateway/src/main/resources/application.yml):
 
-Here is an example 
+Here is an example
 
 ```yaml
 [ ... ]
@@ -324,7 +324,7 @@ cloud:
             - RewritePath=/isbns,/v1/isbns
 ```
 
-Restart the gateway: 
+Restart the gateway:
 
 * Type CTRL+C first in the gateway console
 * Run it again:
@@ -342,7 +342,7 @@ You can now test your API using this new way:
 http :8080/books/count "X-API-VERSION: v1" 
 ```
 
-You can create now some dedicated scripts for this new approach. For instance, the [``randomBook``](../bin/randomBook.sh) script can be modified. 
+You can create now some dedicated scripts for this new approach. For instance, the [``randomBook``](../bin/randomBook.sh) script can be modified.
 
 You MAY create the following scripts
 
@@ -416,13 +416,13 @@ http :8080/isbns "accept:application/vnd.api.v1+json"
 
 ## Conclusion
 
-In this chapter we have seen how to specify and deal with API version numbers in a gateway and the backends. 
-The [gateway configuration](../gateway/src/main/resources/application.yml) is intentionally simple and minimalistic. 
+In this chapter we have seen how to specify and deal with API version numbers in a gateway and the backends.
+The [gateway configuration](../gateway/src/main/resources/application.yml) is intentionally simple and minimalistic.
 In _the real life_ we would code a dynamic routing and filtering mechanism.
 
 
 > **Note**
 >
-> In your opinion, which way is better: URI, HTTP header, Accept HTTP header? And where: in the gateway or in the backend? or both?
+> In your opinion, which way is the best: URI, HTTP header, Accept HTTP header? And where: in the gateway or in the backend? or both?
 >
 > [Go then to chapter 3](./03-second_version.md)
