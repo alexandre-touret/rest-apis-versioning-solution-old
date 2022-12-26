@@ -16,10 +16,10 @@ This platform aims to store and get books of a bookstore.
 C4Context
       title System Context diagram for Bookstore System
       Person(customerA, "Bookstore Customer", "A customer of the bookstore") 
-      Person(adminA, "Bookstore Administrator", "An administrator of the bookstore") 
+      Person(adminA, "Bookstore Administrator", "An administrator of <br/> the bookstore") 
       Enterprise_Boundary(b0, "Bookstore Boundary") {
-        System(bookstoreSystem, "Bookstore System", "Allows Book creation, search,...")  
-        System(iamSystem, "Bookstore IAM", "Allows Identification & authorization...")  
+        System(bookstoreSystem, "Bookstore System", "Allows Book <br/> creation, search,...")  
+        System(iamSystem, "Bookstore IAM", "Allows Identification <br/> & authorization...")  
       }
       Rel(customerA, bookstoreSystem, "Uses")
       Rel(adminA, bookstoreSystem, "Uses & manage users")
