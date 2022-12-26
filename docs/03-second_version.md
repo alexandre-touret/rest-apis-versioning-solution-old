@@ -8,13 +8,10 @@ existing customers.
 The very bad point, is our existing customers cannot update their API clients before one year (at least).
 We then decided to create a new version!
 
-Now our customer wants to enable having several authors for a same book.
-Currently, one book could only have one author.
-
 In this case, it is strongly recommended to deal with GIT long time versions.
 For instance, using [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
 
-You can also use container built on top of this workflow to facilitate the deployment of module's versions.
+You can also use and ship Docker images built on top of this workflow to facilitate the deployment of module's versions.
 To simplify the development loop of this workshop, we will only duplicate the [rest-book](../rest-book) module.
 
 > **Note**
@@ -103,7 +100,7 @@ include 'rest-book-2'
 Validate your configuration by building this project:
 
 ```jshelllanguage
-./gradlew build
+./gradlew build -p rest-book-2
 ```
 
 You will then have to re-import the new configuration in your IDE by refreshing it.
@@ -134,10 +131,8 @@ You MAY also update your CI by adding a new job on [your Github workflow](../.gi
 
 ## Adding a new functionality
 
-In this new service, we are to deploy a new feature for our new customer. He has a huge library of books, and we want to
-limit the numbers of results or
-our [``/books`` API](../rest-book/src/main/java/info/touret/bookstore/spring/book/controller/BookController.java) to
-only 10 results.
+In this new service, we are to deploy new features for our new customer. Firstly, he has a huge library of books, we therefore want to
+limit the numbers of results provided by our [``/books`` API](../rest-book/src/main/java/info/touret/bookstore/spring/book/controller/BookController.java) to only 10 results.
 
 We could imagine that a search engine functionality would be more realistic. 
 However, for this workshop, we will only work to a books list limiter. 
@@ -200,7 +195,7 @@ In the [``BookServiceTest``](../rest-book-2/src/test/java/info/touret/bookstore/
         bookService = new BookService(bookRepository, restTemplate, "URL", circuitBreakerFactory,10);
     }
 ```
-and the Mockito configuration of ``should_find_all_books()`` method:
+and the [Mockito](https://site.mockito.org/) configuration of ``should_find_all_books()`` method:
 
 ```java
 @Test
@@ -224,7 +219,7 @@ book:
 Build and test your application:
 
 ```jshelllanguage
-./gradlew clean build
+./gradlew clean build -p rest-book-2
 ```
 
 ## Running it
