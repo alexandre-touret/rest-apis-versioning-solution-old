@@ -39,8 +39,8 @@ class MaintenanceControllerIT {
 
     @BeforeEach
     void setUp() throws Exception {
-        maintenanceUrl = "http://127.0.0.1:" + port + "/v1/maintenance";
-        booksUrl = "http://127.0.0.1:" + port + "/v1/books";
+        maintenanceUrl = "http://127.0.0.1:" + port + "/v2/maintenance";
+        booksUrl = "http://127.0.0.1:" + port + "/v2/books";
         /* Initializes the maintenance flag */
         var requestEntity = RequestEntity.put(new URI(maintenanceUrl)).body(FALSE.toString());
         var responseEntity = restTemplate.exchange(requestEntity, Void.class);
