@@ -28,7 +28,7 @@ server:
     context-path: /v2
 ```
 
-You can also remove the ``book.find.limit`` property in the first version and modify the ``booknumbers.api.timeout_sec`` property. 
+You can also remove the ``book.find.limit`` property in the first version and modify the ``booknumbers.api.timeout_sec`` property in the second one.
 
 Now, start your config server:
 
@@ -155,7 +155,7 @@ http :8083/v2/books
 
 ## Rest-number
 
-This service doesn't really need to be versioned now. 
+This service doesn't really need to be versioned now.
 To put in place the whole infrastructure and the same behaviour of rest-book module, we will apply the same configuration:
 
 * Stop the config server.
@@ -180,7 +180,7 @@ spring.profiles.active=v1
 
 ## Gateway configuration
 
-Now, we will expose both versions in the gateway. 
+Now, we will expose both versions in the gateway.
 In the [gateway configuration file](../gateway/src/main/resources/application.yml), add the following content:
 
 <details>
@@ -250,7 +250,7 @@ In the [gateway configuration file](../gateway/src/main/resources/application.ym
 ```
 </details>
 
-To propose a cohesive and coherent API to our customer, we chose to publish all our API endpoints with a v1 and v2 prefix. 
+To propose a cohesive and coherent API to our customer, we chose to publish all our API endpoints with a v1 and v2 prefix.
 Although [rest-number](../rest-number) only provides **ONE** version (i.e., the ``v1``), we expose both on the gateway and rewrite the URL as following:
 
 ```yaml
@@ -266,7 +266,7 @@ Although [rest-number](../rest-number) only provides **ONE** version (i.e., the 
 
 > **Note**
 >
-> In this chapter, we have seen one part of the impacts of API versioning in configuration management. The most important part is done before, both in the GIT configuration and the release management. 
+> In this chapter, we have seen one part of the impacts of API versioning in configuration management. The most important part is done before, both in the GIT configuration and the release management.
 >
 > [Go then to chapter 5](05-conflicts.md)
 
