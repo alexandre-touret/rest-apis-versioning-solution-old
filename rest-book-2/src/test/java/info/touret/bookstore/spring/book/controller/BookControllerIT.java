@@ -60,7 +60,7 @@ class BookControllerIT {
 
     @BeforeEach
     void setUp() {
-        booksUrl = "http://127.0.0.1:" + port + "/v1/books";
+        booksUrl = "http://127.0.0.1:" + port + "/v2/books";
         mockServer = MockRestServiceServer.bindTo(restTemplate).build();
         mockServer.reset();
     }
@@ -160,7 +160,7 @@ class BookControllerIT {
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         var uri = responseEntity.getHeaders().getLocation();
         assertNotNull(uri);
-        assertTrue(uri.getPath().matches("/v1/books/[1-9]+$"));
+        assertTrue(uri.getPath().matches("/v2/books/[1-9]+$"));
         mockServer.verify();
     }
 
