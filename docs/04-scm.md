@@ -1,7 +1,7 @@
 # Configuration management
 
 ## Preamble
-You can configure your services either during deployment using CI tooling or any other Infra As Code tool ( Istio, Ansible,...) or using a configuration server.
+You can configure your services either during deployment using CI tooling, such as [Gitlab Environments](https://docs.gitlab.com/ee/ci/environments/), any other [Infra As Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) tool ([Istio](https://istio.io/), [Ansible](https://www.ansible.com/),...) or using a configuration server.
 For this workshop, all the configuration items will be provided by [Spring Cloud Config](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_quick_start).
 
 We will illustrate in this chapter the impacts of versioning in the configuration management.
@@ -53,7 +53,7 @@ http http://localhost:8888/rest-book/v2 --print b | jq ' .propertySources[0].sou
 
 ## Rest-book configuration management
 
-First, modify the application.properties files to specify the current profile:
+First, modify the ``application.properties`` files to specify the current profile:
 
 In the [V1](../rest-book/src/main/resources/application.properties):
 
@@ -183,6 +183,9 @@ spring.profiles.active=v1
 Now, we will expose both versions in the gateway. 
 In the [gateway configuration file](../gateway/src/main/resources/application.yml), add the following content:
 
+<details>
+<summary>Click to expand</summary>
+
 ```yaml
         #V2
         # HTTP HEADER VERSIONING
@@ -245,6 +248,7 @@ In the [gateway configuration file](../gateway/src/main/resources/application.ym
           filters:
             - RewritePath=/v2/isbns,/v1/isbns
 ```
+</details>
 
 To propose a cohesive and coherent API to our customer, we chose to publish all our API endpoints with a v1 and v2 prefix. 
 Although [rest-number](../rest-number) only provides **ONE** version (i.e., the ``v1``), we expose both on the gateway and rewrite the URL as following:
@@ -258,6 +262,12 @@ Although [rest-number](../rest-number) only provides **ONE** version (i.e., the 
       - RewritePath=/v2/isbns,/v1/isbns
 ```
 
+
+
+> **Note**
+>
+> In this chapter, we have seen one part of the impacts of API versioning in configuration management. The most important part is done before, both in the GIT configuration and the release management. 
+>
 > [Go then to chapter 5](05-conflicts.md)
 
 
