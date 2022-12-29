@@ -1,6 +1,7 @@
 package info.touret.bookstore.spring.book.service;
 
 import info.touret.bookstore.spring.book.dto.IsbnNumbers;
+import info.touret.bookstore.spring.book.entity.Author;
 import info.touret.bookstore.spring.book.entity.Book;
 import info.touret.bookstore.spring.book.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,7 +70,11 @@ class BookServiceTest {
         /* book & Isbn creation */
         var book = new Book();
         book.setId(1L);
-        book.setAuthor("author");
+        var author = new Author();
+        author.setFirstname("firstname");
+        author.setLastname("lastname");
+        author.setPublicId(UUID.randomUUID());
+        book.setAuthors(List.of(author));
         book.setDescription("description");
         book.setPrice(BigDecimal.TEN);
 
@@ -117,28 +123,39 @@ class BookServiceTest {
     void should_find_books_by_id() {
         Book book = new Book();
         book.setId(1L);
+        var author = new Author();
+        author.setLastname("TEST");
+        book.setAuthors(List.of(author));
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         var bookById = bookService.findBookById(1L);
         assertEquals(1L, bookById.orElseThrow().getId());
+        assertEquals("TEST",bookById.orElseThrow().getAuthors().get(0).getLastname());
     }
 
     @Test
     void should_update_book() {
         Book book = new Book();
         book.setId(1L);
-        book.setAuthor("Harriet Beecher Stowe");
+        var author = new Author();
+        author.setFirstname("Harriet");
+        author.setLastname("Beecher Stowe");
+        author.setPublicId(UUID.randomUUID());
+        book.setAuthors(List.of(author));
         when(bookRepository.save(book)).thenReturn(book);
         var updateBook = bookService.updateBook(book);
         assertNotNull(updateBook);
-        assertEquals(book.getAuthor(), updateBook.getAuthor());
+        assertEquals(book.getAuthors(), updateBook.getAuthors());
     }
 
     @Test
     void should_delete_book() {
         Book book = new Book();
         book.setId(1L);
-        book.setAuthor("Harriet Beecher Stowe");
-
+        var author = new Author();
+        author.setFirstname("Harriet");
+        author.setLastname("Beecher Stowe");
+        author.setPublicId(UUID.randomUUID());
+        book.setAuthors(List.of(author));
         doNothing().when(bookRepository).deleteById(1L);
         bookService.deleteBook(1L);
     }

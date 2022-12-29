@@ -171,7 +171,6 @@ private List<Author> authors;
 Add then the getters and setters:
 
 ```java
-
     public List<Author> getAuthors() {
         return authors;
     }
@@ -295,12 +294,15 @@ INSERT INTO BOOK_AUTHORS(books_id,authors_id) values (1011,1008);
 ```
 </details>
 
-## Tests
+### Tests
 
 Your tests are currently failing. 
 It is time to fix them up!
 
-### BookServiceTest
+Delete the [OldBookControllerIT](../rest-book-2/src/test/java/info/touret/bookstore/spring/book/controller/OldBookControllerIT.java) and the [OldBookDto](../rest-book/src/test/java/info/touret/bookstore/spring/book/dto/OldBookDto.java) class. 
+We don't need them anymore.
+
+#### BookServiceTest
 
 In [this class](../rest-book-2/src/test/java/info/touret/bookstore/spring/book/service/BookServiceTest.java), replace the following statements
 
@@ -331,10 +333,10 @@ In the ``should_update_book``, modify the last assertion:
     
 ```java
 @Test
-void should_update_book() {
-    [...]
+void should_update_book(){
+        [...]
+        assertEquals(book.getAuthors(),updateBook.getAuthors());
         }
-    assertEquals(book.getAuthors(), updateBook.getAuthors());
 ```
 
 Don't forget to mock your new repository:
@@ -344,7 +346,7 @@ Don't forget to mock your new repository:
 private AuthorRepository authorRepository;
 ```
 
-### BookControllerIT
+#### BookControllerIT
 
 Replace in the same way than above the ``authors`` field initialization. You can also to that in a fluent way
 
@@ -413,4 +415,121 @@ http :8083/v2/books
 Now, the database is not usable as is for the V1.
 
 You have to modify it without impacting the service contract (i.e., your OpenAPI definition).
+For this workshop, we will do the translation in the [mappers](../rest-book/src/main/java/info/touret/bookstore/spring/book/mapper).
 
+### JPA entities
+
+Copy/paste [the entities modified in the v2](../rest-book-2/src/main/java/info/touret/bookstore/spring/book/entity).
+
+### Spring Data repository
+Nothing to do here.
+
+### Service layer
+
+Nothing to do here too
+
+### Mapper layer
+
+Create a class ``AuthorMapper`` in the package ``info.touret.bookstore.spring.book.mapper``:
+
+```java
+package info.touret.bookstore.spring.book.mapper;
+
+import info.touret.bookstore.spring.book.entity.Author;
+import org.mapstruct.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface AuthorMapper {
+
+    default String toString(List<Author> authors) {
+        if (authors != null && authors.get(0) != null) {
+            return authors.get(0).getFirstname() + " " + authors.get(0).getLastname();
+        }
+        return null;
+    }
+
+    default List<Author> toAuthorList(String author) {
+        if (author != null) {
+            Author newAuthor = new Author();
+            newAuthor.setLastname(author);
+            return List.of(newAuthor);
+        }
+        return null;
+    }
+
+}
+
+```
+
+Yes [``Null`` sucks](https://en.wikipedia.org/wiki/Tony_Hoare) but it is the MapStruct _normal_ way .
+
+In the [``BookMapper`` class](../rest-book/src/main/java/info/touret/bookstore/spring/book/mapper/BookMapper.java), declare the [``AuthorMapper``](../rest-book/src/main/java/info/touret/bookstore/spring/book/mapper/AuthorMapper.java) as a dependency:
+
+```java
+@Mapper(uses = AuthorMapper.class)
+public interface BookMapper {
+    [...]
+}
+```
+
+### Import Data
+
+Copy paste the [V2 ``import.sql``](../rest-book-2/src/main/resources/import.sql) content into [the V1](../rest-book/src/main/resources/import.sql).
+
+### Tests
+
+In the same way than for the V1, delete the [OldBookControllerIT](../rest-book-2/src/test/java/info/touret/bookstore/spring/book/controller/OldBookControllerIT.java) and the [OldBookDto](../rest-book/src/test/java/info/touret/bookstore/spring/book/dto/OldBookDto.java) class.
+We don't need them anymore.
+
+#### BookServiceTest
+
+Fix your test as earlier your ``author`` field declaration:
+
+```java
+   var author = new Author();
+   author.setFirstname("Harriet");
+   author.setLastname("Beecher Stowe");
+   author.setPublicId(UUID.randomUUID());
+   book.setAuthors(List.of(author));
+```
+
+#### BookControllerIT
+
+Add an assertion in [the ``should_find_a_book()`` method](../rest-book/src/test/java/info/touret/bookstore/spring/book/controller/BookControllerIT.java):
+
+```java
+assertEquals("Harriet Beecher Stowe",bookDto.getAuthor());
+```
+
+### Test it
+
+Run the following command first:
+
+```jshelllanguage
+./gradlew clean build -p rest-book 
+```
+
+Then, start the rest-book module:
+
+```jshelllanguage
+./gradlew bootRun -p rest-book
+```
+
+Reach then the API and check the author attribute:
+
+```jshelllanguage
+http :8082/v1/books
+```
+
+
+> **Note**
+>
+> We have seen in this chapter the potential issues of breaking changes.
+> Adding new features creating new versions usually affect the previous ones. 
+> That's why it is recommended to only propose **TWO** alive versions to your customers. The V1 is deprecated and the V2 is the target version. 
+> 
+> Sometimes the workaround presented here is not possible. You have then to deal with database duplication and versioning. You can use [FlywayDB](https://flywaydb.org/) or [Liquibase](http://www.liquibase.org/) for that purpose.
+> 
+> [Go then to chapter 6](06-authorization.md)
