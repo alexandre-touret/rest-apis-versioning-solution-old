@@ -262,16 +262,32 @@ Although [rest-number](../rest-number) only provides **ONE** version (i.e., the 
       - RewritePath=/v2/isbns,/v1/isbns
 ```
 
+### Test it
 
+Restart your gateway and test it:
+
+```jshelllanguage
+./gradlew clean bootRun -p gateway
+```
+
+You can now create [new scripts files](../bin).
+For instance, here is an example for the [``countBooks.sh``](../bin/countBooks.sh) copied into a new file ``countBooks-v2.sh`` reaching the new version:
+
+You can copy/paste all the scripts in the [bin](../bin) in the same way.
+
+Here is an example for the ``countBooks.sh`` script file copied to ``countBooks-v2.sh``.
+
+```jshelllanguage
+#! /bin/bash
+http :8080/v2/books/count
+```
+This action is voluntary simple.
+Feel free to add an argument to the existing script files if you want ;-).
 
 > **Note**
 >
 > In this chapter, we have seen one part of the impacts of API versioning in configuration management. The most important part is done before, both in the GIT configuration and the release management.
 >
 > [Go then to chapter 5](05-conflicts.md)
-
-
-
-
 
 
