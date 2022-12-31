@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import info.touret.bookstore.spring.book.BookConfiguration;
 import info.touret.bookstore.spring.book.dto.IsbnNumbers;
+import info.touret.bookstore.spring.book.entity.Author;
 import info.touret.bookstore.spring.book.entity.Book;
 import info.touret.bookstore.spring.book.exception.ApiCallTimeoutException;
+import info.touret.bookstore.spring.book.repository.AuthorRepository;
 import info.touret.bookstore.spring.book.repository.BookRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Book Spring Service
@@ -34,6 +37,7 @@ public class BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
     private final RestTemplate restTemplate;
 
     private final CircuitBreakerFactory circuitBreakerFactory;
@@ -42,11 +46,13 @@ public class BookService {
     private final Integer findLimit;
 
     public BookService(BookRepository bookRepository,
+                       AuthorRepository authorRepository,
                        RestTemplate restTemplate,
                        @Value("${booknumbers.api.url}") String isbnServiceURL,
                        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CircuitBreakerFactory circuitBreakerFactory,
                        @Value("${book.find.limit:10}") Integer findLimit) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
         this.restTemplate = restTemplate;
         this.isbnServiceURL = isbnServiceURL;
 
@@ -80,7 +86,7 @@ public class BookService {
                 () -> persistBook(book),
                 throwable -> fallbackPersistBook(book)
         );
-        return bookRepository.save(book);
+        return book;
     }
 
     /**
@@ -123,11 +129,21 @@ public class BookService {
 
     // To be invistgated
     public Book updateBook(@Valid Book book) {
-        return bookRepository.save(book);
+        return bookRepository.save(updateBookGettingOrCreatingNewAuthors(book));
     }
 
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
+    }
+
+    private Book updateBookGettingOrCreatingNewAuthors(Book book){
+        book.setAuthors(book.getAuthors().stream().map(author ->
+                authorRepository.findByPublicId(author.getPublicId()).orElseGet(() -> {
+                    author.setBooks(List.of(book));
+                    return author;
+                })
+        ).toList());
+        return book;
     }
 
     private Book persistBook(Book book) {
@@ -136,6 +152,6 @@ public class BookService {
             book.setIsbn13(isbnNumbers.getIsbn13());
             book.setIsbn13(isbnNumbers.getIsbn10());
         }
-        return bookRepository.save(book);
+        return bookRepository.save(updateBookGettingOrCreatingNewAuthors(book));
     }
 }

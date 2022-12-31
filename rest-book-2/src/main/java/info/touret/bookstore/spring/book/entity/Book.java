@@ -1,10 +1,14 @@
 package info.touret.bookstore.spring.book.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
@@ -14,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.List;
 
 @Entity
 public class Book implements Serializable {
@@ -27,7 +32,8 @@ public class Book implements Serializable {
     private String isbn13;
     @Column(name = "isbn_10")
     private String isbn10;
-    private String author;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
+    private List<Author> authors;
     @Column(name = "year_of_publication")
     private Integer yearOfPublication;
     @Column(name = "nb_of_pages")
@@ -91,13 +97,6 @@ public class Book implements Serializable {
         this.isbn10 = isbn10;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 
     public Integer getYearOfPublication() {
         return yearOfPublication;
@@ -153,5 +152,13 @@ public class Book implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 }

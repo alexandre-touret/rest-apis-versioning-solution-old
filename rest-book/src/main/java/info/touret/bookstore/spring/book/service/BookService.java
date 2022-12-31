@@ -78,7 +78,7 @@ public class BookService {
                 throwable -> fallbackPersistBook(book)
         );
 
-        return bookRepository.save(book);
+        return book;
     }
 
     /**
@@ -119,7 +119,6 @@ public class BookService {
         return bookRepository.findById(id);
     }
 
-    // To be invistgated
     public Book updateBook(@Valid Book book) {
         return bookRepository.save(book);
     }
