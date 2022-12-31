@@ -80,7 +80,7 @@ to:
 assertTrue(uri.getPath().matches("/v1/books/[1-9]+$"));
 ```
 
-* In the [MaintenanceControllerIT](../rest-book/src/test/java/info/touret/bookstore/spring/maintenance/controller/MaintenanceControllerIT.java) test class, you have to modify the ``setUp()`` method in the same way than earlier:
+* In the [MaintenanceControllerIT](../rest-book/src/test/java/info/touret/bookstore/spring/maintenance/controller/MaintenanceControllerIT.java) test class, you have to modify the ``setUp()`` method in the same way as earlier:
 
 ```java
 @BeforeEach
