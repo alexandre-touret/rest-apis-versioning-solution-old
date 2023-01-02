@@ -32,31 +32,37 @@ public class GatewayApplication {
      */
     @Bean
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
-        /* Defaut configuration for OAUTH authorization (TO BE ADDED during the workshop)
+        /* Defaut configuration for OAUTH authorization (TO BE ADDED during the workshop) */
         http.csrf().disable().cors().disable()
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers(GET,"/books/count").hasAuthority("SCOPE_book:read")
-                        .pathMatchers(GET,"/books/random").hasAuthority("SCOPE_book:read")
-                        .pathMatchers(POST,"/books").hasAuthority("SCOPE_book:write")
-                        .pathMatchers("/isbns").hasAuthority("SCOPE_number:read")
+                        .pathMatchers(GET, "/v1/books/count").hasAuthority("SCOPE_book:v1:read")
+                        .pathMatchers(GET, "/v1/books/random").hasAuthority("SCOPE_book:v1:read")
+                        .pathMatchers(POST, "/v1/books").hasAuthority("SCOPE_book:v1:write")
+                        .pathMatchers(GET, "/v1/books").hasAuthority("SCOPE_book:v1:read")
+                        .pathMatchers("/v1/isbns").hasAuthority("SCOPE_number:v1:read")
+                        .pathMatchers(GET, "/v2/books/count").hasAuthority("SCOPE_book:v2:read")
+                        .pathMatchers(GET, "/v2/books/random").hasAuthority("SCOPE_book:v2:read")
+                        .pathMatchers(POST, "/v2/books").hasAuthority("SCOPE_book:v2:write")
+                        .pathMatchers(GET, "/v2/books").hasAuthority("SCOPE_book:v2:read")
+                        .pathMatchers("/v2/isbns").hasAuthority("SCOPE_number:v2:read")
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer().jwt(Customizer.withDefaults());
-*/
-        /* If the previous configuration is applied, you would remove this following line (and the other way around) */
-        http.csrf().disable().cors().disable().authorizeExchange().anyExchange().permitAll();
+
+        /* If the previous configuration is applied, you would remove this following line (and the other way around)
+        http.csrf().disable().cors().disable().authorizeExchange().anyExchange().permitAll();*/
         return http.build();
     }
 
- /* If the security is enabled, you MUST uncomment the following factories
-  @Bean
+    /* If the security is enabled, you MUST uncomment the following factories */
+    @Bean
     JwtDecoder jwtDecoder(OAuth2ResourceServerProperties properties) {
         return NimbusJwtDecoder.withJwkSetUri(properties.getJwt().getJwkSetUri()).build();
 
-    }*/
+    }
 
-  /*  @Bean
+    @Bean
     public ReactiveJwtDecoder reactiveJwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String issuerUrl) {
         return ReactiveJwtDecoders.fromIssuerLocation(issuerUrl);
-    }*/
+    }
 }
