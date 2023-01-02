@@ -6,7 +6,7 @@ They could indeed evolve over your versions.
 
 If you use [OAUTHv2](https://www.rfc-editor.org/rfc/rfc6749.html) or [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) (_what else?_), you could restrict the usage of a version to specific clients or end users using scopes stored in claims.
 
-You can declare scopes stored in claims such as: ``bookv1:write`` or ``numberv2:read`` to specify both the authorised action and the corresponding version. 
+You can declare scopes stored in claims such as: ``book:v1:write`` or ``numberv2:read`` to specify both the authorised action and the corresponding version. 
 
 We will see in this chapter how a standard [``credential flow`` authorization mechanism](https://www.rfc-editor.org/rfc/rfc6749#section-4.4) could handle versioning.
 
@@ -29,10 +29,10 @@ spring.application.name=authorization-server
 authorization.url=http://localhost:${server.port}
 authorization.clients.customer1.clientId=customer1
 authorization.clients.customer1.clientSecret=secret1
-authorization.clients.customer1.scopes=bookv1:read,bookv1:write,numberv1:read
+authorization.clients.customer1.scopes=book:v1:read,book:v1:write,number:v1:read
 authorization.clients.customer2.clientId=customer2
 authorization.clients.customer2.clientSecret=secret2
-authorization.clients.customer2.scopes=bookv2:read,bookv2:write,numberv2:read
+authorization.clients.customer2.scopes=book:v2:read,book:v2:write,numberv2:read
 authorization.clients.gateway.clientId=gateway
 authorization.clients.gateway.clientSecret=secret3
 authorization.clients.gateway.scopes=gateway
@@ -62,11 +62,11 @@ You can now try to generate token as either the ``customer1`` or ``customer2``:
 For ``customer1``:
 
 ```jshelllanguage
-http --form post :8009/oauth2/token grant_type="client_credentials" client_id="customer1" client_secret="secret1" scope="openid bookv1:write bookv1:write numberv1:read"
+http --form post :8009/oauth2/token grant_type="client_credentials" client_id="customer1" client_secret="secret1" scope="openid book:v1:write book:v1:write number:v1:read"
 ```
 
 ```jshelllanguage
-http --form post :8009/oauth2/token grant_type="client_credentials" client_id="customer2" client_secret="secret2" scope="openid bookv2:write bookv2:read numberv2:read"
+http --form post :8009/oauth2/token grant_type="client_credentials" client_id="customer2" client_secret="secret2" scope="openid book:v2:write book:v2:read numberv2:read"
 ```
 
 Verify you have the corresponding scopes.
@@ -77,13 +77,13 @@ Verify you have the corresponding scopes.
 I1MDQ3MTQsImlhdCI6MTY3MjUwNDQxNH0.gAaDcOaORse0NPIauMVK_rhFATqdKCTvLl41HSr2y80JEj_EHN9bSO5kg2pgkz6KIiauFQ6CT1NJPUlqWO8jc8-e5rMjwWuscRb8flBeQNs4-AkJjbevJeCoQoCi_bewuJy7Y7jqOXiGxglgMBk-0pr5Lt85dkepRaBSSg9vgVnF_X6fyRjXVSXNIDJh7DQcQQ-Li0z5EkeHUIUcXByh19IfiFuw-HmMYXu9EzeewofYj9Gsb_7qI0Ubo2x7y6W2tvzmr2PxkyWbmoioZdY9K0
 nP6btskFz2hLjkL_aS9fHJnhS6DS8Sz1J_t95SRUtUrBN8VjA6M-ofbYUi5Pb97Q",
     "expires_in": 299,
-    "scope": "bookv2:write numberv2:read openid bookv2:read",
+    "scope": "book:v2:write numberv2:read openid book:v2:read",
     "token_type": "Bearer"
 }
 
 ```
 
-You can also try using inappropriate scopes (e.g., using ``bookv1:read`` scope for ``customer2``).
+You can also try using inappropriate scopes (e.g., using ``book:v1:read`` scope for ``customer2``).
 
 You MUST have this error:
 
@@ -136,15 +136,15 @@ Uncomment block codes in the [gateway application](../gateway/src/main/java/info
         /* Defaut configuration for OAUTH authorization (TO BE ADDED during the workshop) */
         http.csrf().disable().cors().disable()
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers(GET, "/v1/books/count").hasAuthority("SCOPE_bookv1:read")
-                        .pathMatchers(GET, "/v1/books/random").hasAuthority("SCOPE_bookv1:read")
-                        .pathMatchers(POST, "/v1/books").hasAuthority("SCOPE_bookv1:write")
-                        .pathMatchers(GET, "/v1/books").hasAuthority("SCOPE_bookv1:read")
-                        .pathMatchers("/v1/isbns").hasAuthority("SCOPE_numberv1:read")
-                        .pathMatchers(GET, "/v2/books/count").hasAuthority("SCOPE_bookv2:read")
-                        .pathMatchers(GET, "/v2/books/random").hasAuthority("SCOPE_bookv2:read")
-                        .pathMatchers(POST, "/v2/books").hasAuthority("SCOPE_bookv2:write")
-                        .pathMatchers(GET, "/v2/books").hasAuthority("SCOPE_bookv2:read")
+                        .pathMatchers(GET, "/v1/books/count").hasAuthority("SCOPE_book:v1:read")
+                        .pathMatchers(GET, "/v1/books/random").hasAuthority("SCOPE_book:v1:read")
+                        .pathMatchers(POST, "/v1/books").hasAuthority("SCOPE_book:v1:write")
+                        .pathMatchers(GET, "/v1/books").hasAuthority("SCOPE_book:v1:read")
+                        .pathMatchers("/v1/isbns").hasAuthority("SCOPE_number:v1:read")
+                        .pathMatchers(GET, "/v2/books/count").hasAuthority("SCOPE_book:v2:read")
+                        .pathMatchers(GET, "/v2/books/random").hasAuthority("SCOPE_book:v2:read")
+                        .pathMatchers(POST, "/v2/books").hasAuthority("SCOPE_book:v2:write")
+                        .pathMatchers(GET, "/v2/books").hasAuthority("SCOPE_book:v2:read")
                         .pathMatchers("/v2/isbns").hasAuthority("SCOPE_numberv2:read")
                         .anyExchange().authenticated()
                 )
@@ -198,7 +198,7 @@ to:
 #! /bin/bash
 
 
-access_token=`http --form post :8009/oauth2/token grant_type="client_credentials" client_id="customer1" client_secret="secret1" scope="openid bookv1:read" -p b | jq -r '.access_token'`
+access_token=`http --form post :8009/oauth2/token grant_type="client_credentials" client_id="customer1" client_secret="secret1" scope="openid book:v1:read" -p b | jq -r '.access_token'`
 
 http :8080/v1/books/count "Authorization: Bearer ${access_token}"
 
