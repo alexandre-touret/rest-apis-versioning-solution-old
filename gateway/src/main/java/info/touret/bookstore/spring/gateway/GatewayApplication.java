@@ -44,7 +44,7 @@ public class GatewayApplication {
                         .pathMatchers(GET, "/v2/books/random").hasAuthority("SCOPE_book:v2:read")
                         .pathMatchers(POST, "/v2/books").hasAuthority("SCOPE_book:v2:write")
                         .pathMatchers(GET, "/v2/books").hasAuthority("SCOPE_book:v2:read")
-                        .pathMatchers("/v2/isbns").hasAuthority("SCOPE_numberv2:read")
+                        .pathMatchers("/v2/isbns").hasAuthority("SCOPE_number:v2:read")
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer().jwt(Customizer.withDefaults());
